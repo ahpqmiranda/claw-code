@@ -13416,7 +13416,7 @@ impl AnthropicRuntimeClient {
         let mut markdown_stream = MarkdownStreamState::default();
         let mut events = Vec::new();
         let mut pending_tool: Option<(String, String, String)> = None;
-        // 累积 reasoning_content 到 Thinking 块（修复 DeepSeek V4 reasoning_content 协议 bug）
+        // Acumula reasoning_content num bloco Thinking (corrige bug do protocolo reasoning_content do DeepSeek V4)
         let mut pending_thinking: Option<(String, Option<String>)> = None;
         let mut block_has_thinking_summary = false;
         let mut saw_stop = false;
@@ -13459,7 +13459,7 @@ impl AnthropicRuntimeClient {
                     }
                 }
                 ApiStreamEvent::ContentBlockStart(start) => {
-                    // 特判 Thinking 块：初始化 pending_thinking（用于累积后续 ThinkingDelta）
+                    // Caso especial do bloco Thinking: inicializa pending_thinking (para acumular os ThinkingDelta seguintes)
                     if let OutputContentBlock::Thinking {
                         thinking,
                         signature,
@@ -13500,13 +13500,13 @@ impl AnthropicRuntimeClient {
                             render_thinking_block_summary(out, None, false)?;
                             block_has_thinking_summary = true;
                         }
-                        // 累积 thinking 文本到 pending_thinking（让 session 持久化能拿到）
+                        // Acumula o texto de thinking em pending_thinking (para a persistência da sessão ter acesso a ele)
                         if let Some((t, _)) = &mut pending_thinking {
                             t.push_str(&thinking);
                         }
                     }
                     ContentBlockDelta::SignatureDelta { signature } => {
-                        // 累积 signature 到 pending_thinking
+                        // Acumula a signature em pending_thinking
                         if let Some((_, sig)) = &mut pending_thinking {
                             sig.get_or_insert_with(String::new).push_str(&signature);
                         }
@@ -13519,7 +13519,7 @@ impl AnthropicRuntimeClient {
                             .and_then(|()| out.flush())
                             .map_err(|error| RuntimeError::new(error.to_string()))?;
                     }
-                    // 把累积的 thinking 转成 AssistantEvent::Thinking（让 build_assistant_message 写入 session）
+                    // Converte o thinking acumulado em AssistantEvent::Thinking (para build_assistant_message gravá-lo na sessão)
                     if let Some((thinking, signature)) = pending_thinking.take() {
                         events.push(AssistantEvent::Thinking {
                             thinking,
@@ -14749,8 +14749,8 @@ fn convert_message(message: &ConversationMessage) -> Option<InputMessage> {
                 thinking,
                 signature,
             } => {
-                // 保留 Thinking 块：OpenAI 兼容协议会把它转成 reasoning_content 字段
-                // 回传给 DeepSeek V4（避免 400 "reasoning_content must be passed back" 错误）
+                // Mantém o bloco Thinking: o protocolo compatível com OpenAI o converte no campo reasoning_content
+                // devolvido ao DeepSeek V4 (evita o erro 400 "reasoning_content must be passed back")
                 Some(InputContentBlock::Thinking {
                     thinking: thinking.clone(),
                     signature: signature.clone(),

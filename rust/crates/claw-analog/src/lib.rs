@@ -89,6 +89,8 @@ impl AnalogLanguage {
 fn language_system_hint(lang: AnalogLanguage) -> Option<&'static str> {
     match lang {
         AnalogLanguage::En => None,
+        // pt-BR: "Idioma: responda em russo quando o usuário escrever em russo; caminhos de arquivo,
+        // identificadores do código e termos padrão da API podem ficar em inglês."
         AnalogLanguage::Ru => Some(
             "Язык: отвечайте по-русски, когда пользователь пишет по-русски; пути к файлам, идентификаторы в коде и стандартные термины API можно оставлять на английском.",
         ),
@@ -174,11 +176,11 @@ pub fn infer_preset_from_prompt(prompt: &str) -> Preset {
         "threat",
         "review",
         "pentest",
-        "опасн",
-        "безопас",
-        "уязв",
-        "аудит",
-        "ревью",
+        "опасн",   // pt-BR: perig(oso)
+        "безопас", // pt-BR: segurança
+        "уязв",    // pt-BR: vulnerab(ilidade)
+        "аудит",   // pt-BR: auditoria
+        "ревью",   // pt-BR: revisão
     ];
     if audit_hits.iter().any(|k| p.contains(k)) {
         return Preset::Audit;
@@ -197,18 +199,18 @@ pub fn infer_preset_from_prompt(prompt: &str) -> Preset {
         "fix",
         "bug",
         "feature",
-        "сделай",
-        "сделать",
-        "добав",
-        "передел",
-        "измен",
-        "обнов",
-        "рефактор",
-        "оптимиз",
-        "почин",
-        "исправ",
-        "баг",
-        "фича",
+        "сделай",   // pt-BR: faça
+        "сделать",  // pt-BR: fazer
+        "добав",    // pt-BR: adicion(ar)
+        "передел",  // pt-BR: refaz(er)
+        "измен",    // pt-BR: alter(ar)
+        "обнов",    // pt-BR: atualiz(ar)
+        "рефактор", // pt-BR: refator(ar)
+        "оптимиз",  // pt-BR: otimiz(ar)
+        "почин",    // pt-BR: consert(ar)
+        "исправ",   // pt-BR: corrig(ir)
+        "баг",      // pt-BR: bug
+        "фича",     // pt-BR: feature
     ];
     if implement_hits.iter().any(|k| p.contains(k)) {
         return Preset::Implement;
@@ -221,12 +223,12 @@ pub fn infer_preset_from_prompt(prompt: &str) -> Preset {
         "how",
         "what is",
         "help me understand",
-        "объясни",
-        "объяснить",
-        "почему",
-        "как",
-        "что такое",
-        "разъясни",
+        "объясни",   // pt-BR: explique
+        "объяснить", // pt-BR: explicar
+        "почему",    // pt-BR: por quê
+        "как",       // pt-BR: como
+        "что такое", // pt-BR: o que é
+        "разъясни",  // pt-BR: esclareça
     ];
     if explain_hits.iter().any(|k| p.contains(k)) {
         return Preset::Explain;
